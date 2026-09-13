@@ -1,7 +1,7 @@
 # notarized: false
 cask "starfarer" do
-  version "0.5.0"
-  sha256 "ba94cc074018b0a31ff1a2403453bfa197cb499805f94d048e5a6ec5828db4c1"
+  version "0.6.0"
+  sha256 "f9438734ecbc3e4d989f1726910d25cda49a926338942ea18681c1af7d004348"
 
   url "https://downloads.starfarer.ai/releases/v#{version}/Starfarer-aarch64.dmg"
   name "Starfarer"
