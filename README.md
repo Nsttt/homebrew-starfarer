@@ -39,8 +39,9 @@ brew upgrade --cask nsttt/starfarer/starfarer
 ```
 
 This replaces the desktop. The running daemon keeps its installed runtime so an
-app upgrade cannot interrupt a session. Finish or jump away all local sessions,
-quit the desktop, then select the new bundled runtime:
+app upgrade cannot interrupt a session. Apply or discard the planet's sessions,
+including any that started here and jumped away, quit the desktop, then select
+the new bundled runtime:
 
 ```sh
 starfarer_cli="/Applications/Starfarer.app/Contents/Resources/runtime/bin/starfarer-planet"
@@ -50,6 +51,12 @@ starfarer_cli="/Applications/Starfarer.app/Contents/Resources/runtime/bin/starfa
 "$starfarer_cli" status
 open -a Starfarer
 ```
+
+`install` and `service install` refuse while sessions still depend on the
+installed runtime, and `install` reports when the new runtime changes the moon
+runtime digest. Sessions bound to the old digest cannot run on or return to this
+planet afterward. Add `--allow-live-sessions` to both commands only to accept
+that loss.
 
 Adjust the app path if you used Homebrew's `--appdir` option. Set
 `STARFARER_PLANET_ROOT` for a non-default planet. Existing identities, enrollment,
@@ -62,7 +69,8 @@ brew uninstall --cask nsttt/starfarer/starfarer
 ```
 
 Uninstall removes the desktop. The independent daemon and planet data remain,
-including with `--zap`, which removes only desktop caches and preferences.
+including with `--zap`, which removes only the desktop's local storage, caches,
+and preferences.
 To also stop the local service, finish or jump away its sessions and run
 `"$starfarer_cli" service stop` using the app path above before uninstalling.
 

@@ -21,9 +21,11 @@ cask "starfarer" do
   app "Starfarer.app"
 
   zap trash: [
+    "~/Library/Application Support/Starfarer",
     "~/Library/Caches/com.nstlopez.starfarer",
     "~/Library/Preferences/com.nstlopez.starfarer.plist",
     "~/Library/Saved Application State/com.nstlopez.starfarer.savedState",
+    "~/Library/WebKit/com.nstlopez.starfarer",
   ]
 
   caveats <<~EOS

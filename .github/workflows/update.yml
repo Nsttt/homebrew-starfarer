@@ -1,11 +1,13 @@
 name: Update Starfarer cask
 
 on:
+  # Starfarer's release pipeline dispatches this after publishing downloads.
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -31,7 +33,7 @@ jobs:
           set -Eeuo pipefail
           code=$(curl --silent --show-error --location --retry 5 --retry-connrefused \
             --output "$RUNNER_TEMP/latest.json" --write-out '%{http_code}' \
-            https://downloads.starfarer.ai/latest.json)
+            "https://downloads.starfarer.ai/latest.json?check=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT")
           case "$code" in
             200) printf 'available=true\n' >> "$GITHUB_OUTPUT" ;;
             404)
@@ -74,3 +76,10 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m "chore: update Starfarer to $version"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+      # GitHub disables schedules after 60 days without repository activity.
+      # Releases are rare, so re-enable this workflow on every scheduled run.
+      - name: Keep the schedule enabled
+        if: ${{ !cancelled() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/$GITHUB_REPOSITORY/actions/workflows/update.yml/enable"
